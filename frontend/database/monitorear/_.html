@@ -1,0 +1,78 @@
+<!--use:main-->
+
+<!--define:title-->Database<!--/define:title-->
+
+<!--define:head-->
+  <link rel="stylesheet" href="/database/monitorear/_.css" />
+<!--/define:head-->
+
+<!--define:script-->
+	<script>
+    const env = '{{data:process.env.NODE_ENV}}';
+    const user_roles = {{data:JSON.stringify(doc.roles)}};
+    const host = "{{data:process.env.HOST}}";
+    const timezone = '{{data:process.env.TIMEZONE}}';
+  </script>
+	<script src="/database/perfil.js"></script>
+	<script src="/database/menu.js"></script>
+	<script src="{{data:process.env.HOST_ARCHIVOSPUBLICOS}}/assets/lib/node_modules/chart.js/dist/chart.umd.min.js"></script>
+	<script src="/database/monitorear/_.js"></script>
+
+<!--/define:script-->
+
+<!--define:main-->
+	
+	<!--include:header-->
+	<!--include:modal/_-->
+  
+  <div class="d-flex">
+		<aside class="border border-end bg-body-tertiary min-vh-100 flex-shrink-0 offcanvas-md offcanvas-end"
+			tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="width: 300px;">
+      
+      <nav class="nav nav-pills flex-column px-3 mt-4 gap-2 main-fixed">
+        <a class="nav-link" href="/">
+          <i class="bi bi-house-door me-2"></i> Inicio
+        </a>
+        <a 
+          v-for="(atributo, indice) in monitor.listaAtributos"
+          :key="atributo"
+          :href="'/monitorear#dv_' + indice"
+          class="nav-link text-start text-success"
+        >
+          <i class="bi bi-activity me-2"></i>
+          {{ atributo }}
+        </a>
+      </nav>
+      
+    </aside>
+    <div class="resizer"></div>
+		<main class="flex-grow-1 px-md-4 mb-4" style="min-width: 0;">
+      
+      <h4 class="mt-4 d-flex justify-content-between align-items-center">
+        <span>Monitor de Salud de Base de Datos</span>
+        <i
+            class="fas fa-copy text-muted"
+            style="cursor:pointer"
+            title="Copiar"
+            v-on:click="monitor.copy()"
+        ></i>
+      </h4>
+      <hr>
+      <div class="container my-4">
+        <div v-for="(atributo, indice) in monitor.listaAtributos" :key="indice" :id="'dv_' + indice" class="a4-page mb-4">
+          <p>
+            <strong>{{atributo}}</strong> {{monitor.tempDescription(atributo)}}
+            <i class="fas fa-copy text-muted"
+              style="cursor:pointer"
+              title="Copiar"
+              v-on:click="monitor.copy(indice)">
+            </i>
+          </p>
+          <canvas :id="'chart_' + indice"></canvas>
+        </div>
+      </div>
+      
+    </main>
+  </div>
+	
+<!--/define:main-->

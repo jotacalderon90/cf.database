@@ -1,0 +1,40 @@
+html {
+  scroll-behavior: smooth;
+}
+
+canvas {
+  max-width: 100%;
+}
+.main-fixed {
+  position: sticky;
+  top: 1rem; /* distancia desde el top al hacer scroll */
+  max-height: 100vh;
+  overflow-y: auto;
+  flex-wrap: nowrap; /* ← evita el wrap en columnas */
+}
+
+@media print {
+  body {
+    margin: 0;
+  }
+
+  .a4-page {
+    page-break-after: always;
+    box-shadow: none;
+    
+    height: 1123px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    box-sizing: border-box;
+  }
+  /*mas densidad
+  .a4-page {
+    width: 1240px;
+    height: 1754px;
+  }*/
+  
+  header,aside,#sidebar,h4,hr {
+    display: none !important;
+  }
+}

@@ -1,0 +1,35 @@
+
+services:
+
+  database_automatic:
+    build:
+      context: .
+      target: prod
+    image: database_automatic:0.0.1
+    container_name: database_automatic
+    restart: "no"
+    env_file:
+      - .env.production
+    volumes:
+      - ../backend/lib:/srv/cf.database_automatic/backend/lib
+      - ../frontend:/srv/cf.database_automatic/frontend
+      - /srv/report/database:/srv/cf.database_automatic/informes
+      - /var/log/trascender/database_automatic:/srv/cf.database_automatic/logs
+    environment:
+       NODE_ENV: production
+       PORT: 3302
+    ports:
+      - "127.0.0.1:3302:3302"
+    networks:
+      - red_cliente_jotace
+      - red_mongo
+      - red_redis
+
+networks:
+  red_cliente_jotace:
+    external: true
+  red_mongo:
+    external: true
+  red_redis:
+    external: true
+

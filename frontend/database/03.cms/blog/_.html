@@ -1,0 +1,160 @@
+<!--use:main-->
+
+<!--define:title-->Formulario<!--/define:title-->
+
+<!--define:head-->
+	<link href="{{data:process.env.HOST_ARCHIVOSPUBLICOS}}/assets/lib/node_modules/jquery-ui-dist/jquery-ui.min.css" rel="stylesheet" />
+	<link href="{{data:process.env.HOST_ARCHIVOSPUBLICOS}}/assets/lib/node_modules/summernote/dist/summernote.min.css" rel="stylesheet" />
+<!--/define:head-->
+
+<!--define:script-->
+	<script	src="{{data:process.env.HOST_ARCHIVOSPUBLICOS}}/assets/lib/node_modules/jquery/dist/jquery.min.js"></script>
+	<script	src="{{data:process.env.HOST_ARCHIVOSPUBLICOS}}/assets/lib/node_modules/jquery-ui-dist/jquery-ui.min.js"></script>
+	<script src="{{data:process.env.HOST_ARCHIVOSPUBLICOS}}/assets/lib/node_modules/summernote/dist/summernote.min.js"></script>
+	<script>
+    const env = '{{data:process.env.NODE_ENV}}';
+    const user_roles = {{data:JSON.stringify(doc.roles)}};
+    const host = "{{data:process.env.HOST}}";
+    const object = {{data:JSON.stringify(doc.object)}};
+    const registro = {{data:JSON.stringify(doc.registro)}};
+    
+    const __host = '{{data:doc.__host}}';
+    const __hostArchivosPublicos = '{{data:doc.__hostArchivosPublicos}}';
+  </script>
+	<script src="/database/perfil.js"></script>
+	<script src="/database/menu.js"></script>
+	<script src="/database/03.cms/{{data:doc.object.name}}/_.js"></script>
+<!--/define:script-->
+
+<!--define:main-->
+	
+	<!--include:header-->
+	<!--include:modal/_-->
+	
+  <div class="d-flex">
+		<aside class="border border-end bg-body-tertiary min-vh-100 flex-shrink-0 offcanvas-md offcanvas-end"
+			tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="width: 300px;">
+      
+      <nav class="nav flex-column px-3 mt-4" style="position:fixed">
+					<a class="nav-link" href="/">
+						<i class="fa fa-home"></i> Inicio
+					</a>
+					<a class="nav-link" :href="'/objetos/' + registroBlog.object.name">
+						<i class="fa fa-database"></i> Datos
+					</a>
+				</nav>
+      
+    </aside>
+    <div class="resizer"></div>
+		<main class="flex-grow-1 px-md-4 mb-4" style="min-width: 0;">
+    
+      <h4 class="mt-4">
+					<span v-show="registroBlog.isCreateMode()">
+						Nuevo registro
+					</span>
+					<span v-show="registroBlog.isEditMode()">
+						{{registroBlog.registro.title}}
+					</span>
+				</h4>
+				
+				<hr>
+				
+				<div class="mb-3">
+					<label for="inputTitle" class="form-label">Título</label>
+					<input type="text" class="form-control" id="inputTitle" placeholder="Título" v-model="registroBlog.registro.title" v-on:blur="registroBlog.updateUrl()"/>
+				</div>
+				
+				<div class="mb-3">
+					<label for="inputUrl" class="form-label">URL</label>
+					<input type="text" class="form-control" id="inputUrl" placeholder="URL" v-model="registroBlog.registro.uri"/>
+				</div>
+        
+				<div class="mb-3">
+					<label for="inputResume" class="form-label">Resumen</label>
+					<input type="text" class="form-control" id="inputResume" placeholder="Resumen" v-model="registroBlog.registro.resume" />
+				</div>
+				
+				<div class="mb-3">
+					<label for="input_content" class="form-label">Contenido</label>
+					<input type="text" class="form-control" id="input_content" placeholder="Contenido" />
+				</div>
+        
+				<div class="mb-3" v-show="!registroBlog.isCreateMode()">
+					<label for="inputImage" class="form-label">Imagen</label>
+          <input type="file" class="form-control" id="inputImage" placeholder="Título" v-show="registroBlog.isEditMode()" v-on:change="registroBlog.changeIMG($event)" />
+					<img id="dataImage" height="200" />
+				</div>
+				
+				<!--
+				<div class="mb-3">
+					<label for="inputYoutube" class="form-label">Youtube</label>
+					<input type="text" class="form-control" id="inputYoutube" placeholder="Youtube" v-model="registroBlog.registro.youtube" />
+				</div>
+				-->
+				<div class="mb-3">
+					<label for="input_tag" class="form-label">Tags</label>
+					<input 
+						type="text" 
+						class="form-control" 
+						id="input_tag" 
+						placeholder="Agregar tag" 
+						v-model="registroBlog.registro.tagbk" 
+						v-on:keypress="registroBlog.addTag($event)"/>
+					<p>
+						<span v-for="(row,index) in registroBlog.registro.tag" :key="index">
+							<span class="badge text-bg-primary">
+								{{row}}
+								<i class="fa fa-close text-danger" v-on:click="registroBlog.removeTag(index)"></i>
+							</span>
+							&nbsp;
+						</span>
+					</p>
+				</div>
+				
+				<div class="mb-3">
+					<label for="inputTagPrincipal" class="form-label">Tag Principal</label>
+					<select class="form-control" v-model="registroBlog.registro.tag_main" >
+							<option v-for="row in registroBlog.registro.tag">{{row}}</option>
+					</select>
+				</div>
+				
+				<div class="mb-3">
+					<label class="form-check-label" for="inputHabilitado">
+						Habilitado&nbsp;
+					</label>
+					<input class="form-check-input" id="inputHabilitado" type="checkbox" v-model="registroBlog.registro.active">
+				</div>
+				
+				<div class="mb-3">
+					<label for="inputDomain" class="form-label">Domain <small>(ejm: 'blog'.midominio.cl )</small></label>
+					<input type="text" class="form-control" id="inputDomain" placeholder="Dominio (blog/ecommerce)" v-model="registroBlog.registro.domain" />
+				</div>
+				
+        <!----------->
+        <!--ACTIONS-->
+        <!----------->
+        
+				<div class="text-end bg-body-tertiary">
+					<hr>
+					<!--<a :href="'https://' + registroBlog.host + '/' + registroBlog.registro.uri" class="btn btn-info">
+						<i class="fa fa-eye"></i>
+					</a>-->
+					<a :href="'/objetos/' + registroBlog.object.name + '/' + registroBlog.registro.id" class="btn btn-info">
+						<i class="fa fa-database"></i>
+					</a>
+					<button type="button" class="btn btn-primary" title="Crear" v-on:click="registroBlog.create()" v-show="registroBlog.isCreateMode()">
+						<i class="fa fa-check"></i>
+					</button>
+					<button type="button" class="btn btn-success" title="Actualizar" v-on:click="registroBlog.update()" v-show="registroBlog.isEditMode()">
+						<i class="fa fa-check"></i>
+					</button>
+					<button type="button" class="btn btn-danger" title="Eliminar" v-on:click="registroBlog.delete()" v-show="registroBlog.isEditMode()">
+						<i class="fa fa-trash"></i>
+					</button>
+					<hr>
+				</div>
+    
+    </main>
+  </div>
+	
+<!--/define:main-->

@@ -1,0 +1,73 @@
+<!--use:main-->
+
+<!--define:title-->Database<!--/define:title-->
+
+<!--define:script-->
+
+  <script>
+    const env = '{{data:process.env.NODE_ENV}}';
+    const user_roles = {{data:JSON.stringify(doc.roles)}};
+    const host = "{{data:process.env.HOST}}";
+  </script>
+	<script src="/database/perfil.js"></script>
+	<script src="/database/menu.js"></script>
+	<script src="/database/01.objetos/collection/_.js"></script>
+
+<!--/define:script-->
+
+<!--define:main-->
+	
+	<!--include:header-->
+	<!--include:modal/_-->
+	
+  <div class="d-flex">
+		<aside class="border border-end bg-body-tertiary min-vh-100 flex-shrink-0 offcanvas-md offcanvas-end"
+			tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel" style="width: 300px;">
+      
+      <nav class="nav flex-column px-3 mt-4">
+					<a class="nav-link" href="/monitorear">
+						<i class="fa fa-solid fa-house-chimney-medical"></i> Monitorear
+					</a>
+					<a class="nav-link" title="Exportar" v-on:click="objetos.export()">
+						<i class="fa fa-download"></i> Exportar
+					</a>
+					<a class="nav-link" href="/objetos/form">
+						<i class="fa fa-plus"></i> Nuevo objeto 
+					</a>
+					<a class="nav-link" v-for="row in objetos.collection" :href="objetos.getURLCollection(row)">
+						{{ row.label || row.name}}
+					</a>
+					<button class="btn btn-warning" v-show="!objetos.exist('roles')" v-on:click="objetos.createRole()">Crear Rol</button>
+					<button class="btn btn-warning" v-show="!objetos.exist('user')" v-on:click="objetos.createUser()">Crear Usuario</button>
+					<button class="btn btn-warning" v-show="!objetos.exist('blog')" v-on:click="objetos.createBlog()">Crear Blog</button>
+					<button class="btn btn-warning" v-show="!objetos.exist('ecommerce')" v-on:click="objetos.createEcommerce()">Crear Ecommerce</button>
+					<button class="btn btn-warning" v-show="!objetos.exist('cart')" v-on:click="objetos.createCart()">Crear Carro</button>
+					<button class="btn btn-warning" v-show="!objetos.exist('mailing')" v-on:click="objetos.createMailing()">Crear Correos Generados</button>
+					<button class="btn btn-warning" v-show="!objetos.exist('mailing_seen')" v-on:click="objetos.createMailingSeen()">Crear Correos Vistos</button>
+				</nav>
+      
+      
+    </aside>
+    </aside>
+    <div class="resizer"></div>
+		<main class="flex-grow-1 px-md-4 mb-4" style="min-width: 0;">
+    
+      
+    
+      <!--
+      <div class="alert alert-warning d-flex align-items-center mt-4" role="alert">
+        <i class="fa-solid fa-triangle-exclamation me-3 fs-4"></i>
+        <div class="flex-grow-1">
+          <strong>¡Atención!</strong><br>
+          Si desea actualizar las definiciones de modelos locales con las disponibles en el servidor, presione el siguiente botón.
+        </div>
+        <a class="btn btn-warning ms-3" v-on:click="objetos.refreshFromServer()">
+          <i class="fa-solid fa-arrows-rotate me-1"></i>
+          Actualizar modelos
+        </a>
+      </div>-->
+    
+    </main>
+  </div>
+	
+<!--/define:main-->
